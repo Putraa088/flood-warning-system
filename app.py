@@ -43,120 +43,103 @@ st.set_page_config(
 if 'controllers_initialized' not in st.session_state:
     st.session_state.visitor_controller = VisitorController()
     st.session_state.flood_controller = FloodReportController()
-    st.session_state.realtime_controller = RealTimeDataController()
+    st.session_state.realtime_controller = RealTimeDataController()  # BARU
     st.session_state.controllers_initialized = True
 
 # Assign ke variabel lokal untuk kemudahan penggunaan
 visitor_controller = st.session_state.visitor_controller
 flood_controller = st.session_state.flood_controller
-realtime_controller = st.session_state.realtime_controller
+realtime_controller = st.session_state.realtime_controller  # BARU
 
-# ✅ PERBAIKAN CSS UNTUK STREAMLIT CLOUD - TANPA UBAH STRUKTUR
+# Custom CSS untuk navigation (TIDAK DIUBAH)
 st.markdown("""
 <style>
-    /* BACKGROUND UTAMA - FORCE HITAM */
-    .stApp {
-        background-color: #000000 !important;
-    }
-    
-    /* HEADER NAVIGATION - FORCE HITAM */
     .nav-header {
-        background: #000000 !important;
-        padding: 0 !important;
-        margin: -1rem -1rem 2rem -1rem !important;
-        border-bottom: 3px solid #ff4b4b !important;
+        background: #000000;
+        padding: 0;
+        margin: -1rem -1rem 2rem -1rem;
+        border-bottom: 3px solid #ff4b4b;
     }
     
-    /* HERO SECTION - SOLID COLOR (GRADIENT GANTI SOLID) */
-    .hero-section-custom {
-        background: #667eea !important; /* WARNA SOLID DARI GRADIENT */
-        color: white !important;
-        padding: 70px 40px !important;
-        border-radius: 15px !important;
-        margin-bottom: 40px !important;
-        text-align: center !important;
-    }
-    
-    /* ABOUT SECTION - SOLID COLOR */
-    .about-section-custom {
-        background: #667eea !important; /* WARNA SOLID DARI GRADIENT */
-        color: white !important;
-        padding: 40px !important;
-        border-radius: 15px !important;
-        margin-bottom: 30px !important;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.15) !important;
-    }
-    
-    /* FEATURE CARDS - TETAP PUTIH */
-    .feature-card-custom {
-        background: white !important;
-        padding: 30px !important;
-        border-radius: 12px !important;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.15) !important;
-        border-left: 5px solid #1f77b4 !important;
-        height: 100% !important;
-        margin-bottom: 25px !important;
-    }
-    
-    /* NAVIGATION STYLING - TETAP SAMA */
     .nav-container {
-        display: flex !important;
-        justify-content: flex-end !important;
-        align-items: center !important;
-        padding: 0 2rem !important;
-        height: 50px !important;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 0 2rem;
+        height: 50px;
     }
     
     .nav-menu {
-        display: flex !important;
-        list-style: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        gap: 0 !important;
-        height: 100% !important;
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        gap: 0;
+        height: 100%;
     }
     
     .nav-item {
-        position: relative !important;
-        height: 100% !important;
+        position: relative;
+        height: 100%;
     }
     
     .nav-link {
-        color: white !important;
-        text-decoration: none !important;
-        padding: 0 20px !important;
-        display: flex !important;
-        align-items: center !important;
-        height: 100% !important;
-        font-weight: 600 !important;
-        font-size: 15px !important;
-        transition: all 0.3s ease !important;
-        border-right: 1px solid rgba(255,255,255,0.3) !important;
-        cursor: pointer !important;
-        white-space: nowrap !important;
+        color: white;
+        text-decoration: none;
+        padding: 0 20px;
+        display: flex;
+        align-items: center;
+        height: 100%;
+        font-weight: 600;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        border-right: 1px solid rgba(255,255,255,0.3);
+        cursor: pointer;
+        white-space: nowrap;
     }
     
     .nav-item:last-child .nav-link {
-        border-right: none !important;
-        padding-right: 0 !important;
+        border-right: none;
+        padding-right: 0;
     }
     
     .nav-link:hover {
-        background-color: rgba(255,255,255,0.15) !important;
-        color: #ffeb3b !important;
+        background-color: rgba(255,255,255,0.15);
+        color: #ffeb3b;
     }
     
     .nav-link.active {
-        background-color: rgba(255,255,255,0.2) !important;
-        color: #ffeb3b !important;
-        font-weight: 700 !important;
+        background-color: rgba(255,255,255,0.2);
+        color: #ffeb3b;
+        font-weight: 700;
     }
     
-    /* STREAMLIT COMPONENTS OVERRIDE */
-    .stButton > button {
-        border-radius: 4px !important;
+    /* Style untuk Streamlit buttons */
+    .nav-button {
+        background: none;
+        border: none;
+        color: white;
+        padding: 0 20px;
+        height: 50px;
+        font-weight: 600;
+        font-size: 15px;
+        cursor: pointer;
+        border-right: 1px solid rgba(255,255,255,0.3);
+        transition: all 0.3s ease;
     }
     
+    .nav-button:hover {
+        background-color: rgba(255,255,255,0.15);
+        color: #ffeb3b;
+    }
+    
+    .nav-button.active {
+        background-color: rgba(255,255,255,0.2);
+        color: #ffeb3b;
+        font-weight: 700;
+    }
+    
+    /* Style untuk selectbox yang terlihat seperti dropdown */
     .stSelectbox > div > div {
         background-color: transparent !important;
         border: none !important;
@@ -165,26 +148,6 @@ st.markdown("""
     
     .stSelectbox > div > div:hover {
         background-color: rgba(255,255,255,0.15) !important;
-    }
-    
-    /* TEXT COLOR OVERRIDES */
-    h1, h2, h3, h4, h5, h6 {
-        color: inherit !important;
-    }
-    
-    /* FORCE WHITE TEXT ON DARK BACKGROUNDS */
-    .hero-section-custom h1,
-    .hero-section-custom p,
-    .about-section-custom h2, 
-    .about-section-custom p {
-        color: white !important;
-    }
-    
-    /* FORCE DARK TEXT ON WHITE BACKGROUNDS */
-    .feature-card-custom h3,
-    .feature-card-custom p,
-    .feature-card-custom li {
-        color: #333 !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -229,10 +192,9 @@ def show_navigation():
             # ✅ PERBAIKAN: Langsung navigasi tanpa melalui "Laporan Bulan Ini"
             if laporan_option == "Laporan Harian":
                 st.session_state.current_page = "Laporan Harian"
-                st.rerun()
             elif laporan_option == "Rekapan Bulanan":
                 st.session_state.current_page = "Rekapan Bulanan"
-                st.rerun()
+            # Hapus logic untuk "LAPORAN BULAN INI" karena hanya sebagai placeholder
         
         with col4:
             if st.button("🔮 Prediksi Banjir", 
@@ -252,17 +214,16 @@ def show_navigation():
             # ✅ PERBAIKAN: Langsung navigasi tanpa melalui "Analisis Prediktif" 
             if analisis_option == "Analisis ANN":
                 st.session_state.current_page = "Analisis ANN"
-                st.rerun()
             elif analisis_option == "Analisis Gumbel":
                 st.session_state.current_page = "Analisis Gumbel"
-                st.rerun()
+            # Hapus logic untuk "Analisis Prediktif" karena hanya sebagai placeholder
 
 def show_homepage():
     """Display homepage content"""
     
-    # Hero Section - PAKAI CLASS BARU
+    # Hero Section
     st.markdown("""
-    <div class="hero-section-custom">
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 70px 40px; border-radius: 15px; margin-bottom: 40px; text-align: center;">
         <h1 style="margin:0; font-size: 2.8em; font-weight: 800; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">Website Sistem Peringatan Dini Banjir</h1>
         <p style="font-size: 1.3em; font-weight: 500; opacity: 0.95; margin-top: 15px; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">
             Integrasi Deep Learning dan Analisis Statistik untuk Prediksi Banjir yang Akurat
@@ -270,44 +231,44 @@ def show_homepage():
     </div>
     """, unsafe_allow_html=True)
     
-    # About Application - PAKAI CLASS BARU
+    # About Application
     st.markdown("""
-    <div class="about-section-custom">
-        <h2 style="font-size: 1.8em; font-weight: 700; margin-bottom: 20px; border-bottom: 3px solid rgba(255,255,255,0.5); padding-bottom: 8px; display: inline-block; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">Tentang Aplikasi:</h2>
-        <p style="font-size: 1.15em; font-weight: 500; line-height: 1.6; text-align: justify; opacity: 0.95; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">
-            Aplikasi ini mengintegrasikan <strong style="font-weight: 700; opacity: 1;">deep learning berbasis Neural Network</strong> dengan pendekatan statistik 
-            <strong style="font-weight: 700; opacity: 1;">Distribusi Gumbel</strong> untuk melakukan pemodelan dan prediksi kejadian ekstrem. Kombinasi kedua metode 
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 6px 20px rgba(0,0,0,0.15);">
+        <h2 style="font-size: 1.8em; font-weight: 700; color: white; margin-bottom: 20px; border-bottom: 3px solid rgba(255,255,255,0.5); padding-bottom: 8px; display: inline-block; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">Tentang Aplikasi:</h2>
+        <p style="font-size: 1.15em; font-weight: 500; line-height: 1.6; color: white; text-align: justify; opacity: 0.95; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">
+            Aplikasi ini mengintegrasikan <strong style="color: white; font-weight: 700; opacity: 1;">deep learning berbasis Neural Network</strong> dengan pendekatan statistik 
+            <strong style="color: white; font-weight: 700; opacity: 1;">Distribusi Gumbel</strong> untuk melakukan pemodelan dan prediksi kejadian ekstrem. Kombinasi kedua metode 
             ini menghasilkan analisis yang lebih robust, presisi, dan adaptif terhadap variabilitas data.
         </p>
     </div>
     """, unsafe_allow_html=True)
     
-    # Features Section - PAKAI CLASS BARU
+    # Features Section
     col1, col2 = st.columns(2)
     
     with col1:
         st.markdown("""
-        <div class="feature-card-custom">
-            <h3 style="margin-top: 0; margin-bottom: 20px; font-size: 1.5em; font-weight: 700; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">🎯 Prediksi Cerdas</h3>
-            <p style="font-size: 1.1em; font-weight: 600; margin-bottom: 15px; line-height: 1.5;"><strong>Menggunakan Artificial Neural Network untuk prediksi akurat berdasarkan:</strong></p>
+        <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.15); border-left: 5px solid #1f77b4; height: 100%; margin-bottom: 25px;">
+            <h3 style="color: #1f77b4; margin-top: 0; margin-bottom: 20px; font-size: 1.5em; font-weight: 700; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">🎯 Prediksi Cerdas</h3>
+            <p style="font-size: 1.1em; font-weight: 600; color: #333; margin-bottom: 15px; line-height: 1.5;"><strong>Menggunakan Artificial Neural Network untuk prediksi akurat berdasarkan:</strong></p>
             <ul style="margin: 0; padding-left: 20px;">
-            <li style="font-size: 1.05em; font-weight: 500; margin-bottom: 8px; line-height: 1.4;"><strong>Curah hujan</strong> - Analisis intensitas presipitasi</li>
-            <li style="font-size: 1.05em; font-weight: 500; margin-bottom: 8px; line-height: 1.4;"><strong>Tinggi air</strong> - Monitoring level permukaan air (mdpl)</li>
-            <li style="font-size: 1.05em; font-weight: 500; margin-bottom: 8px; line-height: 1.4;"><strong>Kelembaban</strong> - Parameter atmosfer terkait</li>
-            <li style="font-size: 1.05em; font-weight: 500; margin-bottom: 8px; line-height: 1.4;"><strong>Suhu</strong> - Variabel klimatologi pendukung</li>
+            <li style="font-size: 1.05em; font-weight: 500; color: #555; margin-bottom: 8px; line-height: 1.4;"><strong>Curah hujan</strong> - Analisis intensitas presipitasi</li>
+            <li style="font-size: 1.05em; font-weight: 500; color: #555; margin-bottom: 8px; line-height: 1.4;"><strong>Tinggi air</strong> - Monitoring level permukaan air (mdpl)</li>
+            <li style="font-size: 1.05em; font-weight: 500; color: #555; margin-bottom: 8px; line-height: 1.4;"><strong>Kelembaban</strong> - Parameter atmosfer terkait</li>
+            <li style="font-size: 1.05em; font-weight: 500; color: #555; margin-bottom: 8px; line-height: 1.4;"><strong>Suhu</strong> - Variabel klimatologi pendukung</li>
         </ul>
     </div>
     """, unsafe_allow_html=True)
     
     with col2:
         st.markdown("""
-        <div class="feature-card-custom">
-            <h3 style="margin-top: 0; margin-bottom: 20px; font-size: 1.5em; font-weight: 700; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">📊 Analisis Statistik</h3>
-            <p style="font-size: 1.1em; font-weight: 600; margin-bottom: 15px; line-height: 1.5;"><strong>Distribusi Gumbel untuk analisis nilai ekstrem:</strong></p>
+        <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.15); border-left: 5px solid #1f77b4; height: 100%; margin-bottom: 25px;">
+            <h3 style="color: #1f77b4; margin-top: 0; margin-bottom: 20px; font-size: 1.5em; font-weight: 700; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">📊 Analisis Statistik</h3>
+            <p style="font-size: 1.1em; font-weight: 600; color: #333; margin-bottom: 15px; line-height: 1.5;"><strong>Distribusi Gumbel untuk analisis nilai ekstrem:</strong></p>
             <ul style="margin: 0; padding-left: 20px;">
-                <li style="font-size: 1.05em; font-weight: 500; margin-bottom: 8px; line-height: 1.4;"><strong>Probabilitas kejadian banjir</strong> - Perhitungan risiko</li>
-                <li style="font-size: 1.05em; font-weight: 500; margin-bottom: 8px; line-height: 1.4;"><strong>Periode ulang</strong> - Analisis frekuensi kejadian</li>
-                <li style="font-size: 1.05em; font-weight: 500; margin-bottom: 8px; line-height: 1.4;"><strong>Risk assessment</strong> - Evaluasi tingkat bahaya</li>
+                <li style="font-size: 1.05em; font-weight: 500; color: #555; margin-bottom: 8px; line-height: 1.4;"><strong>Probabilitas kejadian banjir</strong> - Perhitungan risiko</li>
+                <li style="font-size: 1.05em; font-weight: 500; color: #555; margin-bottom: 8px; line-height: 1.4;"><strong>Periode ulang</strong> - Analisis frekuensi kejadian</li>
+                <li style="font-size: 1.05em; font-weight: 500; color: #555; margin-bottom: 8px; line-height: 1.4;"><strong>Risk assessment</strong> - Evaluasi tingkat bahaya</li>
             </ul>
         </div>
         """, unsafe_allow_html=True)
@@ -316,7 +277,6 @@ def show_homepage():
     stats = visitor_controller.get_visitor_stats()
     show_visitor_stats(stats)
 
-# ... (FUNGSI LAINNYA TETAP SAMA PERSIS)
 def show_flood_report_page():
     """Display flood report page dengan limit validation"""
     show_flood_report_form(flood_controller) 
@@ -333,6 +293,7 @@ def show_monthly_reports_page():
     st.markdown("### Archive dan Analisis Data Bulanan")
     show_monthly_reports_summary(flood_controller)
 
+# ✅ FUNGSI BARU UNTUK MENU PREDIKSI
 def show_prediction_page():
     """Display flood prediction page"""
     show_prediction_dashboard(realtime_controller)
@@ -369,9 +330,9 @@ def main():
         "Lapor Banjir": show_flood_report_page,
         "Laporan Harian": show_current_month_reports_page,
         "Rekapan Bulanan": show_monthly_reports_page,
-        "Prediksi Banjir": show_prediction_page,
-        "Analisis ANN": show_ai_analysis_page,
-        "Analisis Gumbel": show_gumbel_analysis_page,
+        "Prediksi Banjir": show_prediction_page,  # ✅ DIPERBAIKI
+        "Analisis ANN": show_ai_analysis_page,    # ✅ DIPERBAIKI
+        "Analisis Gumbel": show_gumbel_analysis_page,  # ✅ DIPERBAIKI
     }
     
     handler = page_handlers.get(st.session_state.current_page, show_homepage)
